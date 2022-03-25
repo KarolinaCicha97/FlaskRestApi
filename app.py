@@ -1,7 +1,11 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
+from Forms.LoginForm import *
+from Forms.RegisterForm import *
+
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'thisisupposedtobesecter'
 Bootstrap(app)
 
 
@@ -10,14 +14,22 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    form = LoginForm()
+    if form.validate_on_submit():
+        return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
+    return render_template('login.html', form=form)
 
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    return render_template('signup.html')
+    form =RegisterForm()
+
+    if form.validate_on_submit():
+        return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
+
+    return render_template('signup.html', form=form)
 
 
 @app.route('/dashboard')
